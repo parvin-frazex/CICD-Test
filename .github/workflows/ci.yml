@@ -1,0 +1,43 @@
+name: CI (.NET + Docker)
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build-test-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build & Test
+      run: dotnet test --configuration Release --no-restore
+
+    - name: Publish application
+      run: dotnet publish DockerizedProject.csproj -c Release -o ./publish
+
+    - name: Build Docker image
+      run: docker build -t ${{ github.repository }}:${{ github.sha }} .
+
+    - name: Log in Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_PASS }}
+
+    - name: Push Docker image
+      run: |
+        docker tag ${{ github.repository }}:${{ github.sha }} ${{ secrets.DOCKERHUB_USER }}/dockerizedproject:latest
+        docker push ${{ secrets.DOCKERHUB_USER }}/dockerizedproject:latest
