@@ -29,6 +29,7 @@ namespace DockerizedProject.Controllers
                 new(){Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Sunny"},    
                 new(){Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Sunny"},    
                 new(){Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Sunny"},    
+                new(){Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 25, Summary = "Sunny"},    
             };
             //    var forecasts = new List<WeatherForecast>();
 
